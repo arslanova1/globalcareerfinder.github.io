@@ -2,28 +2,36 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Login - Global Career Finder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
 <style>
-body { background:#0d0d0d; font-family:Poppins,sans-serif; color:white; display:flex; justify-content:center; align-items:center; height:100vh; }
-form { background:#1a1a1a; padding:40px; border-radius:15px; width:320px; text-align:center; }
-input { width:90%; padding:10px; margin:10px 0; border-radius:8px; border:none; }
-button { width:95%; padding:10px; border-radius:8px; border:none; background:#00bfa6; color:white; cursor:pointer; margin-top:15px; }
+body { font-family: Poppins, sans-serif; background: #0d0d0d; color: white; }
+.container { max-width: 500px; margin: 100px auto; padding: 30px; background: rgba(255,255,255,0.08); border-radius: 15px; }
+input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 25px; border: none; background: #222; color: white; }
+button { padding: 12px 20px; border-radius: 25px; border: none; background: #00d8ff; color: black; font-weight: bold; cursor: pointer; }
 </style>
 </head>
 <body>
-<form onsubmit="loginUser(event)">
-<h2>Login</h2>
-<input type="text" id="loginName" placeholder="Nickname" required><br>
-<input type="password" id="loginPass" placeholder="Password" required><br>
-<button type="submit">Login</button>
-</form>
+<div class="container">
+  <h2>Login</h2>
+  <input type="text" id="username" placeholder="Username" required>
+  <input type="password" id="password" placeholder="Password" required>
+  <button onclick="login()">Login</button>
+</div>
 
 <script>
-function loginUser(e){
-e.preventDefault();
-const name=document.getElementById('loginName').value;
-localStorage.setItem('username',name);
-window.location.href='home.html';
+function login() {
+  // Oddiy tekshiruv (haqiqiy autentifikatsiya uchun backend kerak)
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+
+  if (username && password) {
+    localStorage.setItem('isLoggedIn', 'true');
+    alert('Login successful!');
+    window.location.href = 'index.html';
+  } else {
+    alert('Please fill all fields.');
+  }
 }
 </script>
 </body>

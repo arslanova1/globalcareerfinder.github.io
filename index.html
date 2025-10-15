@@ -4,33 +4,143 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Global Career Finder</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
-body { font-family: Poppins, sans-serif; background: #0d0d0d; color: white; margin:0; }
-header { display:flex; justify-content:space-between; align-items:center; padding:20px 50px; background:#111; }
-.logo { font-size:1.6em; font-weight:bold; }
-nav button { margin-left:15px; background:none; border:1px solid #555; color:white; padding:10px 18px; border-radius:25px; cursor:pointer; transition:0.3s; }
-nav button:hover { background:#444; }
-main { text-align:center; padding:80px 20px; }
-.desc { color:#bbb; max-width:700px; margin:20px auto; }
-.main-btn { padding:14px 28px; border:none; border-radius:25px; background:#00bfa6; color:white; font-size:1.1em; cursor:pointer; transition:0.3s; }
-.main-btn:hover { background:#009f8a; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Poppins', sans-serif;
+  background: #0d0d0d;
+  color: white;
+  overflow-x: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 50px;
+  background: rgba(0, 0, 0, 0.7);
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+}
+
+.logo {
+  font-size: 1.8em;
+  font-weight: bold;
+  color: #00d8ff;
+  letter-spacing: 1px;
+}
+
+nav button {
+  margin-left: 15px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid #00d8ff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+}
+
+nav button:hover {
+  background: #00d8ff;
+  color: black;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 150px 20px 80px;
+  background: url('https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+  background-size: cover;
+  height: 100vh;
+  position: relative;
+}
+
+main::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: -1;
+}
+
+h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+  color: #fff;
+  text-shadow: 0 0 10px rgba(0, 216, 255, 0.5);
+}
+
+.desc {
+  color: #bbb;
+  max-width: 700px;
+  margin: 20px auto;
+  font-size: 1.2em;
+  line-height: 1.6;
+}
+
+.main-btn {
+  padding: 16px 36px;
+  border: none;
+  border-radius: 30px;
+  background: #00d8ff;
+  color: black;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 20px;
+  box-shadow: 0 4px 15px rgba(0, 216, 255, 0.4);
+}
+
+.main-btn:hover {
+  background: #00aacc;
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 216, 255, 0.6);
+}
 </style>
 </head>
 <body>
 
 <header>
-<div class="logo">Global Career Finder</div>
-<nav>
-<button onclick="window.location.href='login.html'">Login</button>
-<button onclick="window.location.href='register.html'">Register</button>
-</nav>
+  <div class="logo">Global Career Finder</div>
+  <nav id="navButtons">
+    <!-- Dastlab Login va Register tugmalari -->
+    <button onclick="window.location.href='login.html'">Login</button>
+    <button onclick="window.location.href='register.html'">Register</button>
+  </nav>
 </header>
 
 <main>
-<h1>Discover Your Ideal Career and University</h1>
-<p class="desc">Identify your strengths, explore suitable fields, check universities in 40+ countries, and verify degree recognition worldwide.</p>
-<button class="main-btn" onclick="window.location.href='survey.html'">Take Survey</button>
+  <h1>Discover Your Ideal Career and University</h1>
+  <p class="desc">Identify your strengths, explore suitable fields, check universities in 40+ countries, and verify degree recognition worldwide.</p>
+  <button class="main-btn" onclick="window.location.href='survey.html'">Start Your Journey</button>
 </main>
+
+<script>
+// Tizimga kirganligini tekshirish
+if (localStorage.getItem('isLoggedIn') === 'true') {
+  document.getElementById('navButtons').innerHTML = `
+    <button onclick="window.location.href='account.html'">Account</button>
+  `;
+}
+</script>
 
 </body>
 </html>

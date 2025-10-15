@@ -3,17 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Select Field - Global Career Platform</title>
+<title>Select Field & Country - Global Career Platform</title>
 <style>
 body {margin:0;padding:0;font-family:Poppins,sans-serif;background:#0d0d0d;color:white;}
 .container{max-width:800px;margin:50px auto;padding:20px;background:rgba(255,255,255,0.08);border-radius:15px;}
 h2{text-align:center;margin-bottom:20px;}
-.field{margin:10px 0;padding:12px;background:#111;border-radius:8px;cursor:pointer;}
-.field:hover{background:#00d8ff;color:black;}
-.field.selected{background:#00d8ff;color:black;border:2px solid #00d8ff;} /* Yangi CSS klass */
+.field, .country{margin:10px 0;padding:12px;background:#111;border-radius:8px;cursor:pointer;}
+.field:hover, .country:hover{background:#00d8ff;color:black;}
+.field.selected, .country.selected{background:#00d8ff;color:black;border:2px solid #00d8ff;}
 button{padding:12px;border-radius:25px;border:none;background:#00d8ff;color:black;font-weight:bold;cursor:pointer;transition:0.3s;margin-top:20px;}
 button:hover{background:#00aacc;}
-select{width:100%;padding:10px;margin-top:10px;border-radius:25px;border:none;background:#222;color:white;}
+button:disabled{opacity:0.5;cursor:not-allowed;}
+.hidden{display:none;}
 </style>
 </head>
 <body>
@@ -21,33 +22,17 @@ select{width:100%;padding:10px;margin-top:10px;border-radius:25px;border:none;ba
 <h2>Your Recommended Fields Based on Survey</h2>
 <div id="fieldsList"></div>
 
-<!-- Country tanlash -->
-<h3>Select Your Country</h3>
-<select id="countrySelect">
-    <option value="">-- Select Country --</option>
-    <option value="United States">United States</option>
-    <option value="United Kingdom">United Kingdom</option>
-    <option value="Canada">Canada</option>
-    <option value="Australia">Australia</option>
-    <option value="Germany">Germany</option>
-    <option value="France">France</option>
-    <option value="Switzerland">Switzerland</option>
-    <option value="Netherlands">Netherlands</option>
-    <option value="Sweden">Sweden</option>
-    <option value="Finland">Finland</option>
-    <option value="Norway">Norway</option>
-    <option value="Denmark">Denmark</option>
-    <option value="Russia">Russia</option>
-    <option value="Kazakhstan">Kazakhstan</option>
-    <option value="Uzbekistan">Uzbekistan</option>
-    <!-- qolgan mamlakatlar -->
-</select>
+<!-- Mamlakat tanlash qismi -->
+<div id="countrySection" class="hidden">
+  <h2>Select Your Country</h2>
+  <div id="countriesList"></div>
+</div>
 
 <button id="proceedBtn" disabled>Proceed to Universities</button>
 </div>
 
 <script>
-// 20-30 ta field misol uchun
+// 20-30 ta field
 const allFields = [
   "Computer Science","Engineering","Business","Arts","Medicine","Law","Economics",
   "Physics","Mathematics","Chemistry","Biology","Psychology","Sociology",
@@ -59,82 +44,151 @@ const allFields = [
 // Survey javoblarini o'qish
 const surveyAnswers = JSON.parse(localStorage.getItem('surveyAnswers') || '{}');
 
-// AI logikasi – eng mos 3 ta field
-function suggestFields(answers){
-    let scores = {};
-    allFields.forEach(f=>scores[f]=0);
+if (Object.keys(surveyAnswers).length === 0) {
+  document.getElementById('fieldsList').innerHTML = '<p style="text-align:center;color:#ff6b6b;">No survey data found. Please complete the survey first.</p>';
+  document.getElementById('proceedBtn').disabled = true;
+} else {
+  // AI logikasi – eng mos 5 ta field
+  function suggestFields(answers){
+      let scores = {};
+      allFields.forEach(f=>scores[f]=0);
 
-    if(answers.q1==="Math" || answers.q1==="Science") scores["Computer Science"]+=2, scores["Engineering"]+=2, scores["Physics"]+=2, scores["Mathematics"]+=2, scores["Data Science"]+=2, scores["AI & Machine Learning"]+=2;
-    if(answers.q1==="Arts") scores["Arts"]+=2, scores["Design"]+=2, scores["Architecture"]+=1;
-    if(answers.q1==="Business") scores["Business"]+=2, scores["Finance"]+=2, scores["Marketing"]+=2;
+      // Yangi 30-savollik survey uchun logika
+      // Qiziqishlar (q1–q15)
+      if(answers.q1==="Yes") scores["Computer Science"]+=2;
+      if(answers.q2==="Yes") scores["Data Science"]+=2;
+      if(answers.q3==="Yes") scores["AI & Machine Learning"]+=2;
+      if(answers.q4==="Yes") scores["Business"]+=2;
+      if(answers.q5==="Yes") scores["Finance"]+=2;
+      if(answers.q6==="Yes") scores["Marketing"]+=2;
+      if(answers.q7==="Yes" || answers.q8==="Yes" || answers.q9==="Yes") {
+          scores["Medicine"]+=2; scores["Biology"]+=1; scores["Nursing"]+=1;
+      }
+      if(answers.q10==="Yes") scores["Arts"]+=2; scores["Design"]+=2;
+      if(answers.q11==="Yes") scores["Architecture"]+=2;
+      if(answers.q12==="Yes") scores["Psychology"]+=2;
+      if(answers.q13==="Yes") scores["Education"]+=2;
+      if(answers.q14==="Yes") scores["Music"]+=2;
+      if(answers.q15==="Yes") scores["Film & Media"]+=2;
 
-    if(answers.q2==="Problem-solving") scores["Engineering"]+=2, scores["Computer Science"]+=2, scores["Data Science"]+=1;
-    if(answers.q2==="Creativity") scores["Design"]+=2, scores["Arts"]+=2, scores["Architecture"]+=1;
-    if(answers.q2==="Communication") scores["Marketing"]+=2, scores["Journalism"]+=2, scores["Law"]+=1;
-    if(answers.q2==="Analytical") scores["Finance"]+=2, scores["Data Science"]+=2, scores["Economics"]+=2;
+      // Qobiliyatlar (q16–q30)
+      if(answers.q16==="Yes") scores["Engineering"]+=1; scores["Computer Science"]+=1;
+      if(answers.q17==="Yes") scores["Computer Science"]+=2;
+      if(answers.q18==="Yes") scores["Data Science"]+=2;
+      if(answers.q19==="Yes") scores["Business"]+=1; scores["Marketing"]+=1;
+      if(answers.q20==="Yes") scores["Finance"]+=2;
+      if(answers.q21==="Yes") scores["Marketing"]+=1; scores["Communications"]+=1;
+      if(answers.q22==="Yes" || answers.q23==="Yes") scores["Medicine"]+=1;
+      if(answers.q24==="Yes") scores["Design"]+=2;
+      if(answers.q25==="Yes") scores["Architecture"]+=1;
+      if(answers.q26==="Yes") scores["Psychology"]+=1;
+      if(answers.q27==="Yes") scores["Education"]+=1;
+      if(answers.q28==="Yes") scores["Music"]+=1;
+      if(answers.q29==="Yes") scores["Journalism"]+=1; scores["Literature"]+=1;
+      if(answers.q30==="Yes") scores["Linguistics"]+=2;
 
-    if(answers.q3==="Yes") scores["Computer Science"]+=1, scores["AI & Machine Learning"]+=1, scores["Engineering"]+=1;
-    if(answers.q5==="Yes") scores["Arts"]+=1, scores["Design"]+=1;
+      const sortedFields = Object.entries(scores)
+          .filter(([field, score]) => score > 0)
+          .sort((a,b)=>b[1]-a[1])
+          .map(x=>x[0]);
+      return sortedFields.slice(0,5); // 5 ta soha
+  }
 
-    const sortedFields = Object.entries(scores).sort((a,b)=>b[1]-a[1]).map(x=>x[0]);
-    return sortedFields.slice(0,3);
+  // Recommended fields ni chiqarish
+  const recommended = suggestFields(surveyAnswers);
+  const fieldsDiv = document.getElementById('fieldsList');
+
+  if (recommended.length === 0) {
+      fieldsDiv.innerHTML = '<p style="text-align:center;color:#ff6b6b;">No matching fields found. Please retake the survey.</p>';
+  } else {
+      recommended.forEach(f=>{
+          const div = document.createElement('div');
+          div.className='field';
+          div.textContent=f;
+          div.onclick=()=>{
+              document.querySelectorAll('.field').forEach(el=>el.classList.remove('selected'));
+              div.classList.add('selected');
+              localStorage.setItem('selectedField', f);
+              showCountries(); // Soha tanlanganda mamlakatlarni ko'rsatish
+              checkProceed();
+          };
+          fieldsDiv.appendChild(div);
+      });
+  }
 }
 
-// Recommended fields ni chiqarish
-const recommended = suggestFields(surveyAnswers);
-const fieldsDiv = document.getElementById('fieldsList');
+// Mamlakatlarni ko'rsatish (soha tanlanganda)
+function showCountries() {
+  const countrySection = document.getElementById('countrySection');
+  countrySection.classList.remove('hidden');
 
-recommended.forEach(f=>{
+  // 50 ta mamlakat ro'yxati
+  const allCountries = [
+    "United States", "United Kingdom", "Canada", "Australia", "Germany", "France",
+    "Switzerland", "Netherlands", "Sweden", "Finland", "Norway", "Denmark",
+    "Russia", "Kazakhstan", "Uzbekistan", "Japan", "South Korea", "China",
+    "India", "Brazil", "Mexico", "Israel", "Italy", "Spain", "Poland",
+    "Turkey", "Egypt", "Nigeria", "South Africa", "Malaysia", "Thailand",
+    "Indonesia", "Vietnam", "Philippines", "Chile", "Colombia", "Argentina",
+    "Peru", "Greece", "Portugal", "Ireland", "Austria", "Belgium", "Czech Republic",
+    "Hungary", "Romania", "Ukraine", "Georgia", "Serbia", "Croatia", "Bulgaria", "Slovakia"
+  ];
+
+  const countriesDiv = document.getElementById('countriesList');
+  countriesDiv.innerHTML = '';
+
+  allCountries.forEach(country => {
     const div = document.createElement('div');
-    div.className='field';
-    div.textContent=f;
-    div.onclick=()=>{
-        // Avvalgi tanlovni tozalash
-        document.querySelectorAll('.field').forEach(el=>el.classList.remove('selected'));
-        // Yangi tanlovni qo'shish
-        div.classList.add('selected');
-        localStorage.setItem('selectedField', f);
-        checkProceed();
+    div.className = 'country';
+    div.textContent = country;
+    div.onclick = () => {
+      document.querySelectorAll('.country').forEach(el => el.classList.remove('selected'));
+      div.classList.add('selected');
+      localStorage.setItem('selectedCountry', country);
+      checkProceed();
     };
-    fieldsDiv.appendChild(div);
-});
+    countriesDiv.appendChild(div);
+  });
+}
 
-// Agar localStorage da oldindan tanlangan field bo'lsa, uni belgilash
-const previouslySelectedField = localStorage.getItem('selectedField');
-if(previouslySelectedField && recommended.includes(previouslySelectedField)){
+// Proceed tugmasi
+const proceedBtn = document.getElementById('proceedBtn');
+
+function checkProceed(){
+    const field = localStorage.getItem('selectedField');
+    const country = localStorage.getItem('selectedCountry');
+    proceedBtn.disabled = !(field && country);
+}
+
+proceedBtn.onclick = () => {
+    if (localStorage.getItem('selectedField') && localStorage.getItem('selectedCountry')) {
+        window.location.href = 'universities.html';
+    } else {
+        alert("Please select both a field and a country.");
+    }
+};
+
+// Avval tanlangan field va mamlakatni qayta belgilash
+const prevField = localStorage.getItem('selectedField');
+const prevCountry = localStorage.getItem('selectedCountry');
+
+if(prevField){
     document.querySelectorAll('.field').forEach(el=>{
-        if(el.textContent === previouslySelectedField){
+        if(el.textContent === prevField){
             el.classList.add('selected');
+            showCountries();
         }
     });
 }
 
-// Country va Proceed tugmasi
-const proceedBtn = document.getElementById('proceedBtn');
-const countrySelect = document.getElementById('countrySelect');
-
-// Agar localStorage da oldindan tanlangan mamlakat bo'lsa, uni belgilash
-const previouslySelectedCountry = localStorage.getItem('selectedCountry');
-if(previouslySelectedCountry){
-    countrySelect.value = previouslySelectedCountry;
-}
-
-countrySelect.onchange = function(){
-    // Mamlakat tanlanganda saqlash
-    localStorage.setItem('selectedCountry', this.value);
+if(prevCountry){
+    document.querySelectorAll('.country').forEach(el=>{
+        if(el.textContent === prevCountry){
+            el.classList.add('selected');
+        }
+    });
     checkProceed();
-};
-
-function checkProceed(){
-    const selectedCountry = countrySelect.value;
-    const selectedField = localStorage.getItem('selectedField');
-    proceedBtn.disabled = !(selectedCountry && selectedField);
 }
-
-// Proceed tugmasi bosilganda universities.html ga o'tish
-document.getElementById('proceedBtn').onclick = () => {
-    window.location.href = 'universities.html';
-};
 </script>
 </body>
 </html>
