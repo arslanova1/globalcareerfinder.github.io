@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Universities</title>
+<style>
+body {margin:0;padding:0;font-family:Poppins,sans-serif;background:#0d0d0d;color:white;}
+.container{max-width:900px;margin:50px auto;padding:20px;background:rgba(255,255,255,0.08);border-radius:15px;}
+h2{text-align:center;margin-bottom:20px;}
+.university{margin:10px 0;padding:10px;background:#111;border-radius:8px;}
+.university a{color:#00d8ff;text-decoration:none;}
+.university a:hover{text-decoration:underline;}
+button{padding:12px;border-radius:25px;border:none;background:#00d8ff;color:black;font-weight:bold;cursor:pointer;transition:0.3s;margin-top:20px;}
+button:hover{background:#00aacc;}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>Universities in Your Selected Field</h2>
+<div id="universityList"></div>
+<button onclick="finishSelection()">Finish</button>
+</div>
+
+<script>
+const universities = [
+  // United States
+  {name:"MIT",country:"United States",field:"Computer Science",rating:9.8,link:"https://www.mit.edu"},
+  {name:"Stanford University",country:"United States",field:"Computer Science",rating:9.7,link:"https://www.stanford.edu"},
+  {name:"Harvard University",country:"United States",field:"Business",rating:9.5,link:"https://www.harvard.edu"},
+  {name:"UC Berkeley",country:"United States",field:"Engineering",rating:9.6,link:"https://www.berkeley.edu"},
+  {name:"Princeton University",country:"United States",field:"Data Science",rating:9.4,link:"https://www.princeton.edu"},
+  // United Kingdom
+  {name:"University of Oxford",country:"United Kingdom",field:"Law",rating:9.7,link:"https://www.ox.ac.uk"},
+  {name:"Imperial College London",country:"United Kingdom",field:"Engineering",rating:9.5,link:"https://www.imperial.ac.uk"},
+  {name:"UCL",country:"United Kingdom",field:"Computer Science",rating:9.4,link:"https://www.ucl.ac.uk"},
+  {name:"University of Cambridge",country:"United Kingdom",field:"Physics",rating:9.3,link:"https://www.cam.ac.uk"},
+  // Canada
+  {name:"University of Toronto",country:"Canada",field:"Medicine",rating:9.2,link:"https://www.utoronto.ca"},
+  {name:"McGill University",country:"Canada",field:"Engineering",rating:9.1,link:"https://www.mcgill.ca"},
+  {name:"University of British Columbia",country:"Canada",field:"Computer Science",rating:9.0,link:"https://www.ubc.ca"},
+  // Australia
+  {name:"University of Melbourne", country:"Australia", field:"Various", rating:9.0, link:"https://www.unimelb.edu.au"},
+  {name:"ANU", country:"Australia", field:"Various", rating:8.8, link:"https://www.anu.edu.au"},
+  {name:"University of Sydney", country:"Australia", field:"Various", rating:8.9, link:"https://www.sydney.edu.au"},
+  {name:"University of Queensland", country:"Australia", field:"Various", rating:8.7, link:"https://www.uq.edu.au"},
+  {name:"Monash University", country:"Australia", field:"Various", rating:8.6, link:"https://www.monash.edu"},
+  {name:"UNSW", country:"Australia", field:"Various", rating:8.5, link:"https://www.unsw.edu.au"},
+  {name:"RMIT", country:"Australia", field:"Various", rating:8.4, link:"https://www.rmit.edu.au"},
+
+  // Germany
+  {name:"TUM", country:"Germany", field:"Various", rating:9.1, link:"https://www.tum.de"},
+  {name:"LMU Munich", country:"Germany", field:"Various", rating:8.9, link:"https://www.lmu.de"},
+  {name:"Heidelberg University", country:"Germany", field:"Various", rating:8.8, link:"https://www.uni-heidelberg.de"},
+  {name:"RWTH Aachen", country:"Germany", field:"Various", rating:8.7, link:"https://www.rwth-aachen.de"},
+  {name:"University of Hamburg", country:"Germany", field:"Various", rating:8.5, link:"https://www.uni-hamburg.de"},
+  {name:"KIT", country:"Germany", field:"Various", rating:8.4, link:"https://www.kit.edu"},
+  {name:"Freiburg University", country:"Germany", field:"Various", rating:8.3, link:"https://www.uni-freiburg.de"},
+
+  // France
+  {name:"Sorbonne University", country:"France", field:"Various", rating:9.0, link:"https://www.sorbonne-universite.fr"},
+  {name:"École Polytechnique", country:"France", field:"Various", rating:8.9, link:"https://www.polytechnique.edu"},
+  {name:"Sciences Po", country:"France", field:"Various", rating:8.8, link:"https://www.sciencespo.fr"},
+  {name:"Université PSL", country:"France", field:"Various", rating:8.7, link:"https://psl.eu"},
+  {name:"Paris-Saclay", country:"France", field:"Various", rating:8.6, link:"https://www.universite-paris-saclay.fr"},
+  {name:"Grenoble Alpes University", country:"France", field:"Various", rating:8.5, link:"https://www.univ-grenoble-alpes.fr"},
+  {name:"Aix-Marseille University", country:"France", field:"Various", rating:8.4, link:"https://www.univ-amu.fr"},
+
+  // Switzerland
+  {name:"ETH Zurich", country:"Switzerland", field:"Engineering", rating:9.8, link:"https://ethz.ch"},
+  {name:"EPFL", country:"Switzerland", field:"Engineering", rating:9.7, link:"https://www.epfl.ch"},
+  {name:"University of Zurich", country:"Switzerland", field:"Medicine", rating:9.5, link:"https://www.uzh.ch"},
+  {name:"University of Geneva", country:"Switzerland", field:"Business", rating:9.4, link:"https://www.unige.ch"},
+  {name:"University of Basel", country:"Switzerland", field:"Biology", rating:9.3, link:"https://www.unibas.ch"},
+  {name:"University of Lausanne", country:"Switzerland", field:"Business", rating:9.2, link:"https://www.unil.ch"},
+  {name:"St. Gallen University", country:"Switzerland", field:"Business", rating:9.1, link:"https://www.unisg.ch"},
+
+  // Netherlands
+  {name:"University of Amsterdam", country:"Netherlands", field:"Business", rating:9.5, link:"https://www.uva.nl"},
+  {name:"Delft University of Technology", country:"Netherlands", field:"Engineering", rating:9.4, link:"https://www.tudelft.nl"},
+  {name:"Leiden University", country:"Netherlands", field:"Law", rating:9.3, link:"https://www.universiteitleiden.nl"},
+  {name:"Erasmus University Rotterdam", country:"Netherlands", field:"Economics", rating:9.2, link:"https://www.eur.nl"},
+  {name:"Utrecht University", country:"Netherlands", field:"Medicine", rating:9.1, link:"https://www.uu.nl"},
+  {name:"Vrije Universiteit Amsterdam", country:"Netherlands", field:"Business", rating:9.0, link:"https://vu.nl"},
+  {name:"Wageningen University", country:"Netherlands", field:"Environmental Science", rating:8.9, link:"https://www.wur.nl"},
+
+  // Sweden
+  {name:"Lund University", country:"Sweden", field:"Engineering", rating:9.5, link:"https://www.lu.se"},
+  {name:"KTH Royal Institute of Technology", country:"Sweden", field:"Engineering", rating:9.4, link:"https://www.kth.se"},
+  {name:"Uppsala University", country:"Sweden", field:"Medicine", rating:9.3, link:"https://www.uu.se"},
+  {name:"Chalmers University of Technology", country:"Sweden", field:"Engineering", rating:9.2, link:"https://www.chalmers.se"},
+  {name:"Stockholm University", country:"Sweden", field:"Science", rating:9.1, link:"https://www.su.se"},
+  {name:"Linköping University", country:"Sweden", field:"Engineering", rating:9.0, link:"https://liu.se"},
+  {name:"Örebro University", country:"Sweden", field:"Medicine", rating:8.9, link:"https://www.oru.se"},
+
+  // Finland
+  {name:"University of Helsinki", country:"Finland", field:"Science", rating:9.4, link:"https://www.helsinki.fi"},
+  {name:"Aalto University", country:"Finland", field:"Engineering", rating:9.3, link:"https://www.aalto.fi"},
+  {name:"University of Turku", country:"Finland", field:"Medicine", rating:9.2, link:"https://www.utu.fi"},
+  {name:"University of Oulu", country:"Finland", field:"Engineering", rating:9.1, link:"https://www.oulu.fi"},
+  {name:"University of Jyväskylä", country:"Finland", field:"Education", rating:9.0, link:"https://www.jyu.fi"},
+  {name:"Tampere University", country:"Finland", field:"Engineering", rating:8.9, link:"https://www.tuni.fi"},
+  {name:"Lappeenranta-Lahti University of Technology", country:"Finland", field:"Engineering", rating:8.8, link:"https://www.lut.fi"},
+
+  // Norway
+  {name:"University of Oslo", country:"Norway", field:"Science", rating:9.3, link:"https://www.uio.no"},
+  {name:"Norwegian University of Science and Technology", country:"Norway", field:"Engineering", rating:9.5, link:"https://www.ntnu.edu"},
+  {name:"University of Bergen", country:"Norway", field:"Medicine", rating:9.2, link:"https://www.uib.no"},
+  {name:"University of Tromsø", country:"Norway", field:"Science", rating:9.0, link:"https://en.uit.no"},
+  {name:"BI Norwegian Business School", country:"Norway", field:"Business", rating:8.9, link:"https://www.bi.edu"},
+  {name:"NHH Norwegian School of Economics", country:"Norway", field:"Economics", rating:8.8, link:"https://www.nhh.no"},
+  {name:"OsloMet University", country:"Norway", field:"Education", rating:8.7, link:"https://www.oslomet.no"},
+
+  // Denmark
+  {name:"University of Copenhagen", country:"Denmark", field:"Science", rating:9.4, link:"https://www.ku.dk"},
+  {name:"Aarhus University", country:"Denmark", field:"Science", rating:9.3, link:"https://www.au.dk"},
+  {name:"Technical University of Denmark", country:"Denmark", field:"Engineering", rating:9.5, link:"https://www.dtu.dk"},
+  {name:"Copenhagen Business School", country:"Denmark", field:"Business", rating:9.2, link:"https://www.cbs.dk"},
+  {name:"Aalborg University", country:"Denmark", field:"Engineering", rating:9.0, link:"https://www.en.aau.dk"},
+  {name:"Roskilde University", country:"Denmark", field:"Science", rating:8.9, link:"https://ruc.dk"},
+  {name:"IT University of Copenhagen", country:"Denmark", field:"IT & Computer Science", rating:8.8, link:"https://en.itu.dk"},
+
+  // Russia
+  {name:"Lomonosov Moscow State University", country:"Russia", field:"Science", rating:9.6, link:"https://www.msu.ru"},
+  {name:"ITMO University", country:"Russia", field:"IT & Computer Science", rating:9.5, link:"https://en.itmo.ru"},
+  {name:"HSE University", country:"Russia", field:"Economics", rating:9.4, link:"https://www.hse.ru"},
+  {name:"SPbU", country:"Russia", field:"Science", rating:9.3, link:"https://english.spbu.ru"},
+  {name:"MIPT", country:"Russia", field:"Engineering", rating:9.2, link:"https://mipt.ru"},
+  {name:"Bauman Moscow State Technical University", country:"Russia", field:"Engineering", rating:9.1, link:"https://bmstu.ru"},
+  {name:"Tomsk State University", country:"Russia", field:"Science", rating:9.0, link:"https://www.tsu.ru"},
+
+  // Kazakhstan
+  {name:"Nazarbayev University", country:"Kazakhstan", field:"Science", rating:9.5, link:"https://nu.edu.kz"},
+  {name:"Al-Farabi Kazakh National University", country:"Kazakhstan", field:"Science", rating:9.3, link:"https://www.kaznu.kz"},
+  {name:"Kazakh-British Technical University", country:"Kazakhstan", field:"Engineering", rating:9.2, link:"https://kbtu.edu.kz"},
+  {name:"Astana IT University", country:"Kazakhstan", field:"IT & Computer Science", rating:9.1, link:"https://astanait.edu.kz"},
+  {name:"KIMEP University", country:"Kazakhstan", field:"Business", rating:9.0, link:"https://www.kimep.kz"},
+  {name:"Suleyman Demirel University", country:"Kazakhstan", field:"Engineering", rating:8.9, link:"https://sdu.edu.kz"},
+  {name:"Satbayev University", country:"Kazakhstan", field:"Engineering", rating:8.8, link:"https://satbayev.university"},
+
+  // Uzbekistan
+  {name:"Tashkent University of Information Technologies", country:"Uzbekistan", field:"Computer Science", rating:9.2, link:"https://tuit.uz"},
+  {name:"Westminster International University in Tashkent", country:"Uzbekistan", field:"Business", rating:8.9, link:"https://wiut.uz"},
+  {name:"Inha University in Tashkent", country:"Uzbekistan", field:"Engineering", rating:8.8, link:"https://inha.uz"},
+  {name:"Akfa University", country:"Uzbekistan", field:"Engineering", rating:8.7, link:"https://akfauniversity.org"},
+  {name:"Amity University Tashkent", country:"Uzbekistan", field:"Business", rating:8.6, link:"https://amity.uz"},
+  {name:"Webster University Tashkent", country:"Uzbekistan", field:"Communications", rating:8.5, link:"https://www.webster.uz"},
+  {name:"Tashkent State Technical University", country:"Uzbekistan", field:"Engineering", rating:8.4, link:"https://tdtu.uz"},
+];
+
+const universityListDiv = document.getElementById('universityList');
+const selectedField = localStorage.getItem('selectedField'); // e.g., "Computer Science"
+const selectedCountry = localStorage.getItem('selectedCountry'); // e.g., "United States"
+
+if (!selectedField || !selectedCountry) {
+  universityListDiv.innerHTML = "<p>Please select a field and country first.</p>";
+} else {
+  // 1️⃣ Filter by country
+  const countryUniversities = universities.filter(u => u.country === selectedCountry);
+
+  // 2️⃣ Filter by field — ONLY if field matches EXACTLY or is "Various"
+  // BUT: if selectedField is "Various", show all
+  let fieldUniversities;
+  if (selectedField === "Various") {
+    fieldUniversities = countryUniversities;
+  } else {
+    fieldUniversities = countryUniversities.filter(u => u.field === selectedField || u.field === "Various");
+  }
+
+  // 3️⃣ Sort by rating (descending)
+  const sortedUniversities = fieldUniversities.sort((a, b) => b.rating - a.rating);
+
+  // 4️⃣ Render results
+  if (sortedUniversities.length === 0) {
+    universityListDiv.innerHTML = `<p>No universities found for field "${selectedField}" in "${selectedCountry}".</p>`;
+  } else {
+    universityListDiv.innerHTML = ''; // Clear before appending
+    sortedUniversities.forEach(u => {
+      const div = document.createElement('div');
+      div.className = 'university';
+      // Trim link to avoid extra spaces
+      const cleanLink = u.link.trim();
+      div.innerHTML = `<a href="${cleanLink}" target="_blank">${u.name}</a> - Rating: ${u.rating}`;
+      universityListDiv.appendChild(div);
+    });
+  }
+}
+
+function finishSelection() {
+  // Save selections for later use
+  if (selectedField && selectedCountry) {
+    localStorage.setItem('accountField', selectedField);
+    localStorage.setItem('accountCountry', selectedCountry);
+  }
+  window.location.href = 'home.html';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>15-Question Survey - Global Career Platform</title>
+<style>
+body {margin:0;padding:0;font-family:Poppins,sans-serif;background:#0d0d0d;color:white;}
+.container{max-width:900px;margin:50px auto;padding:20px;background:rgba(255,255,255,0.08);border-radius:15px;}
+h2{text-align:center;margin-bottom:20px;}
+.question{margin-bottom:15px;}
+label{display:block;margin:5px 0;}
+input[type="text"], select{width:100%;padding:10px;margin-bottom:10px;border-radius:25px;border:none;background:#222;color:white;}
+button{padding:12px;border-radius:25px;border:none;background:#00d8ff;color:black;font-weight:bold;cursor:pointer;transition:0.3s;margin-top:10px;}
+button:hover{background:#00aacc;}
+.hidden{display:none;}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>15-Question Survey</h2>
+
+<form id="questionnaireForm">
+
+  <!-- Bo'lim 1: Savol 1-8 -->
+  <div id="section1">
+    <div class="question">
+      <label>1. Which subjects do you enjoy most?</label>
+      <select name="q1" required>
+        <option value="">-- Select --</option>
+        <option value="Math">Math</option>
+        <option value="Science">Science</option>
+        <option value="Arts">Arts</option>
+        <option value="Business">Business</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>2. Which skills do you consider your strongest?</label>
+      <select name="q2" required>
+        <option value="">-- Select --</option>
+        <option value="Problem-solving">Problem-solving</option>
+        <option value="Creativity">Creativity</option>
+        <option value="Communication">Communication</option>
+        <option value="Analytical">Analytical</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>3. Do you enjoy working with technology?</label>
+      <select name="q3" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>4. Are you good at math and logical thinking?</label>
+      <select name="q4" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>5. Do you enjoy creative work like arts or design?</label>
+      <select name="q5" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>6. Are you comfortable with research and analysis?</label>
+      <select name="q6" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>7. Do you prefer working alone or in a team?</label>
+      <select name="q7" required>
+        <option value="">-- Select --</option>
+        <option value="Alone">Alone</option>
+        <option value="Team">Team</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>8. Are you interested in business or entrepreneurship?</label>
+      <select name="q8" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <button type="button" onclick="nextSection()">Next</button>
+  </div>
+
+  <!-- Bo'lim 2: Savol 9-15 -->
+  <div id="section2" class="hidden">
+    <div class="question">
+      <label>9. Are you more introverted or extroverted?</label>
+      <select name="q9" required>
+        <option value="">-- Select --</option>
+        <option value="Introvert">Introvert</option>
+        <option value="Extrovert">Extrovert</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>10. Do you like theoretical or practical work?</label>
+      <select name="q10" required>
+        <option value="">-- Select --</option>
+        <option value="Practical">Practical</option>
+        <option value="Theoretical">Theoretical</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>11. Do you prefer structured or flexible work?</label>
+      <select name="q11" required>
+        <option value="">-- Select --</option>
+        <option value="Structured">Structured</option>
+        <option value="Flexible">Flexible</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>12. Are you detail-oriented?</label>
+      <select name="q12" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>13. Do you enjoy helping others?</label>
+      <select name="q13" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>14. Are you interested in science and research?</label>
+      <select name="q14" required>
+        <option value="">-- Select --</option>
+        <option value="Yes">Yes</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <div class="question">
+      <label>15. Do you prefer working independently or collaboratively?</label>
+      <select name="q15" required>
+        <option value="">-- Select --</option>
+        <option value="Independently">Independently</option>
+        <option value="Collaboratively">Collaboratively</option>
+      </select>
+    </div>
+    <button type="submit">Submit Questionnaire</button>
+  </div>
+
+</form>
+</div>
+<script>
+function nextSection(){
+  document.getElementById('section1').classList.add('hidden');
+  document.getElementById('section2').classList.remove('hidden');
+}
+document.getElementById('questionnaireForm').addEventListener('submit', function(e){
+  e.preventDefault(); // form submit bo‘lishini to‘xtatadi
+  const formData = new FormData(this);
+  const answers = {};
+  for (let [key, value] of formData.entries()){
+    answers[key] = value;
+  }
+  localStorage.setItem('surveyAnswers', JSON.stringify(answers));
+  // Survey tugagach fields.html sahifasiga o'tish
+  window.location.href = 'fields.html';
+});
+
+
+</script>
+</body>
+</html>

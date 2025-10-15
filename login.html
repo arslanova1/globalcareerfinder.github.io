@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Login - Global Career Finder</title>
+<style>
+body { background:#0d0d0d; font-family:Poppins,sans-serif; color:white; display:flex; justify-content:center; align-items:center; height:100vh; }
+form { background:#1a1a1a; padding:40px; border-radius:15px; width:320px; text-align:center; }
+input { width:90%; padding:10px; margin:10px 0; border-radius:8px; border:none; }
+button { width:95%; padding:10px; border-radius:8px; border:none; background:#00bfa6; color:white; cursor:pointer; margin-top:15px; }
+</style>
+</head>
+<body>
+<form onsubmit="loginUser(event)">
+<h2>Login</h2>
+<input type="text" id="loginName" placeholder="Nickname" required><br>
+<input type="password" id="loginPass" placeholder="Password" required><br>
+<button type="submit">Login</button>
+</form>
+
+<script>
+function loginUser(e){
+e.preventDefault();
+const name=document.getElementById('loginName').value;
+localStorage.setItem('username',name);
+window.location.href='home.html';
+}
+</script>
+</body>
+</html>
